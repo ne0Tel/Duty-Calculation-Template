@@ -22,7 +22,7 @@
     <div class="price-currency">
 
       <label>Стоимость в валюте</label>
-      <input class="input-price-currency" type="number" name="price_currency" id="id_price_currency" min="0" max="1000000000" step="10" required>
+      <input class="input-price-currency" type="number" name="price_currency" id="id_price_currency" min="0" max="1000000000" step="1" required>
     </div>
 
     <div class="release-auto">
@@ -39,13 +39,13 @@
     <div class="engine-volume">
 
       <label>Объём двигателя</label>
-      <input class="input-engine-volume" type="number" name="engine_volume" id="id_engine_volume" min="0" max="90" step="10" required>
+      <input class="input-engine-volume" type="number" name="engine_volume" id="id_engine_volume" min="0" max="90" step="1" required>
     </div>
 
     <div class="engine-power">
 
       <label>Мощность двигателя</label>
-      <input class="input-engine-power" type="number" name="engine_power" id="id_engine_power" min="0" max="3000" step="10" required>
+      <input class="input-engine-power" type="number" name="engine_power" id="id_engine_power" min="0" max="3000" step="1" required>
     </div>
 
     <div class="engine-type">
@@ -71,10 +71,10 @@
       </select>
     </div>
 
-    <button class="count-cost" id="id_count_cost" type="button">Рассчитать стоимость</button>
+    <button class="count-cost" id="id_count_cost" type="submit">Рассчитать стоимость</button>
   </form>
 
-  <div class="total" style="width:200px; height:100px; padding: 10px; margin-top: 10px; border: 1px solid red"></div>
+  <div class="total" style="width:300px; height:100px; padding: 10px; margin-top: 10px; border: 1px solid red"></div>
               
   <script src="./index.js"></script>
 </body>
