@@ -45,7 +45,11 @@
     <div class="engine-power">
 
       <label id="id_label_engine_power">Мощность двигателя</label>
-      <input placeholder="л.с" class="input-engine-power" type="number" name="engine_power" id="id_engine_power" min="0" max="3000" step="1" required>
+      <input class="input-engine-power" type="number" name="engine_power" id="id_engine_power" min="0" max="3000" step="1" required>
+      <select name="type_power" id="id_type_engine_power">
+        <option value="horsepower">л.с</option>
+        <option value="kW">кВт</option>
+      </select>
     </div>
 
     <div class="engine-type">

@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById("id_count_cost").addEventListener("click", funcPreload);
 
   // Контроль дропдоуна "Тип авто" для изменения состояния интпута "Объём двигателя"
-  document.getElementById("id_engine_type").addEventListener("change", changeVolumeInput);
+  // document.getElementById("id_engine_type").addEventListener("change", changeVolumeInput);
 
   // Определение значений в полях
   function funcPreload (e) {
@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dataCalc.engineType = document.getElementById("id_engine_type").value;
     dataCalc.typePerson = document.getElementById("id_type_person").value;
     
+    conversionPower();
     customsСalculator();
   }
 
@@ -76,6 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
     tableCost.appendChild(divRecycling);
     tableCost.appendChild(divDuty);
     tableCost.appendChild(divTotal);
+  }
+
+  // Конвертация из кВт в л.с если выбранные кВт
+  function conversionPower () {
+    if (document.getElementById('id_type_engine_power').value === 'kW') dataCalc.enginePower = dataCalc.enginePower / 1.36;
+    console.log(`Перевод в л.с: ${dataCalc.enginePower}`);
   }
 
   // Убрать поле объёма если электромобиль
