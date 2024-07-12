@@ -13,10 +13,29 @@ document.addEventListener('DOMContentLoaded', () => {
   // Кнопка рассчета
   document.getElementById("id_count_cost").addEventListener("click", funcPreload);
 
+  // Контроль дропдоуна "Тип авто" для изменения состояния интпута "Объём двигателя"
+  document.getElementById("id_engine_type").addEventListener("change", changeVolumeInput);
+
   // Определение значений в полях
   function funcPreload (e) {
+
+    // Если электромобиль, проверять правильность всех полей кроме объёма
+    if (document.getElementById("id_engine_type").value === "electric") {
+      if (
+        (Number(document.getElementById("id_price_currency").value) <= -1 || Number(document.getElementById("id_engine_power").value <= -1)) ||
+        (Number(document.getElementById("id_price_currency").value) > 1000000000 || Number(document.getElementById("id_engine_power").value > 3000)) ||
+        (document.getElementById("id_price_currency").value === '' || document.getElementById("id_engine_power").value === '')
+      ) return;
+
+    } else {
+
+      if (
+        (Number(document.getElementById("id_price_currency").value) <= -1 || Number(document.getElementById("id_engine_volume").value) <= -1 || Number(document.getElementById("id_engine_power").value <= -1)) ||
+        (Number(document.getElementById("id_price_currency").value) > 1000000000 || Number(document.getElementById("id_engine_volume").value) > 25480000 || Number(document.getElementById("id_engine_power").value > 3000)) ||
+        (document.getElementById("id_price_currency").value === '' || document.getElementById("id_engine_volume").value === '' || document.getElementById("id_engine_power").value === '')
+      ) return;
+    }
     
-    if (document.getElementById("id_price_currency").value === '' || document.getElementById("id_engine_volume").value === '' || document.getElementById("id_engine_power").value === '') return;
 
     e.preventDefault();
 
@@ -27,8 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dataCalc.enginePower = Number(document.getElementById("id_engine_power").value);
     dataCalc.engineType = document.getElementById("id_engine_type").value;
     dataCalc.typePerson = document.getElementById("id_type_person").value;
-
-
+    
     customsСalculator();
   }
 
@@ -59,6 +77,22 @@ document.addEventListener('DOMContentLoaded', () => {
     tableCost.appendChild(divDuty);
     tableCost.appendChild(divTotal);
   }
+
+  // Убрать поле объёма если электромобиль
+  function changeVolumeInput () {
+    if (document.getElementById("id_engine_type").value === "electric") {
+
+      document.querySelector('.engine-volume').style.display = "none";
+      document.getElementById('id_engine_volume').setAttribute('disabled', '');
+      dataCalc.engineVolume = 0;
+    
+    } else if (document.getElementById("id_engine_type").value !== "electric") {
+
+      document.querySelector('.engine-volume').style.display = "block";
+      document.getElementById('id_engine_volume').removeAttribute('disabled', '');
+
+    }
+  }
   
   // Главная функция
   function customsСalculator () {
@@ -72,10 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
       totalAmount: 0,       // Цена за всё
     }
     const moneyСurrency = {
-      JPY: 0.5466,
-      CNY: 11.9469,
-      KRW: 	0.06369,
-      EUR: 95.3447,
+      JPY: 0.5444,
+      CNY: 11.9987,
+      KRW: 0.0638149,
+      EUR: 95.6817,
     }
 
     // Перевод цены авто на аукционе
@@ -96,8 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (finalCost.costAuto < 200000) finalCost.customsClearance = 775;
       else if (finalCost.costAuto < 450000) finalCost.customsClearance = 	1550;
       else if (finalCost.costAuto < 1200000) finalCost.customsClearance = 3100;
-      else if (finalCost.costAuto < 4200000) finalCost.customsClearance = 8530;
-      else if (finalCost.costAuto < 4500000) finalCost.customsClearance = 12000;
+      else if (finalCost.costAuto < 2700000) finalCost.customsClearance = 8530;
+      else if (finalCost.costAuto < 4200000) finalCost.customsClearance = 12000;
       else if (finalCost.costAuto < 5500000) finalCost.customsClearance = 15500;
       else if (finalCost.costAuto < 7000000) finalCost.customsClearance = 20000;
       else if (finalCost.costAuto < 8000000) finalCost.customsClearance = 23000;
@@ -267,12 +301,24 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (dataCalc.enginePower >= 501) finalCost.exciseTax = dataCalc.enginePower * 1662;
 
       // Для юридического лица стоимость за всё будет рассчитываться: стоимость авто + утиль + пошлина + таможенное оформление + ((стоимость авто + пошлина + акциз) * 20%)
-      finalCost.totalAmount = finalCost.costAuto + finalCost.recylingColl + finalCost.duty + finalCost.customsClearance + ((finalCost.costAuto + finalCost.duty + finalCost.exciseTax) * (20 / 100));
+      finalCost.totalAmount = finalCost.costAuto + finalCost.recylingColl + finalCost.duty + finalCost.customsClearance;
+
+      console.log(`НДС: ${(finalCost.costAuto + finalCost.duty + finalCost.exciseTax) * (20 / 100)}`);
+    } else if (dataCalc.engineType === 'electric') {
+
+      if (dataCalc.enginePower <= 90) finalCost.exciseTax = dataCalc.enginePower * 0;
+      else if (dataCalc.enginePower >= 91 && dataCalc.enginePower <= 150) finalCost.exciseTax = dataCalc.enginePower * 58;
+      else if (dataCalc.enginePower >= 151 && dataCalc.enginePower <= 200) finalCost.exciseTax = dataCalc.enginePower * 557;
+      else if (dataCalc.enginePower >= 201 && dataCalc.enginePower <= 300) finalCost.exciseTax = dataCalc.enginePower * 912;
+      else if (dataCalc.enginePower >= 301 && dataCalc.enginePower <= 400) finalCost.exciseTax = dataCalc.enginePower * 1555;
+      else if (dataCalc.enginePower >= 401 && dataCalc.enginePower <= 500 ) finalCost.exciseTax = dataCalc.enginePower * 1609;
+      else if (dataCalc.enginePower >= 501) finalCost.exciseTax = dataCalc.enginePower * 1662;
+
+      finalCost.totalAmount = finalCost.costAuto + finalCost.recylingColl + finalCost.duty;
 
       console.log(`НДС: ${(finalCost.costAuto + finalCost.duty + finalCost.exciseTax) * (20 / 100)}`);
     } else {
-
-      finalCost.totalAmount = finalCost.costAuto + finalCost.recylingColl + finalCost.duty + finalCost.customsClearance;
+      finalCost.totalAmount = finalCost.costAuto + finalCost.recylingColl + finalCost.duty;
     }
 
 
